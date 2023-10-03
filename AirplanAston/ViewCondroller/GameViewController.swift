@@ -17,7 +17,6 @@ class GameViewController: UIViewController {
     
     var timer: Timer!
     var airplainX: NSLayoutConstraint?
-    var UFOY: NSLayoutConstraint?
     var UFOX: NSLayoutConstraint?
     var counter: CGFloat = 0
     
@@ -64,37 +63,31 @@ class GameViewController: UIViewController {
         animationImage()
         view.layer.contents = UIImage(imageLiteralResourceName: "background").cgImage
         navigationController?.isNavigationBarHidden = true
-        creatingObstacle()
-        animateImage()
+        createObstacle()
     }
     
-    private func creatingObstacle() {
+    private func createObstacle() {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [ weak self ] timer in
             guard let self else { return }
             let image = UIImageView()
             image.image = UIImage(named: "UFO")
             
-            self.view.addSubview(image)
+            self.view.insertSubview(image, at: 0)
             image.translatesAutoresizingMaskIntoConstraints = false
             
             let constant = CGFloat(Int.random(in: -150...150))
+            let yConstraint = image.topAnchor.constraint(equalTo: self.view.topAnchor, constant:  -100)
+            yConstraint.isActive = true
             
             NSLayoutConstraint.activate([
                 image.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: constant),
                 image.heightAnchor.constraint(equalToConstant: 50),
                 image.widthAnchor.constraint(equalToConstant: 50)])
-            
-            self.UFOY = image.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -self.view.frame.height / 2)
-            self.UFOY?.isActive = true
             self.view.layoutIfNeeded()
-
-        }
-    }
-    
-    func animateImage() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            UIView.animate(withDuration: 5, delay: 0, options: .beginFromCurrentState) {
-                self.UFOY?.constant = self.view.frame.height / 2 + 50
+            
+            yConstraint.constant = self.view.frame.height + 100
+            
+            UIView.animate(withDuration: 5) {
                 self.view.layoutIfNeeded()
             }
         }
@@ -150,14 +143,12 @@ class GameViewController: UIViewController {
         
         airplainX = airplaneImage.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         airplainX?.isActive = true
-        
     }
     
     private func animationImage() {
         UIView.animate(withDuration: 3) {
             self.leftShore.frame.origin.y = self.view.frame.height * 2
             self.rightShore.frame.origin.y = self.view.frame.height * 2
-            
         }
     }
     
@@ -167,6 +158,7 @@ class GameViewController: UIViewController {
                 counter += 100
             }
         }
+        
         if sander.tag == 1 {
             if counter > -100 {
                 counter -= 100
