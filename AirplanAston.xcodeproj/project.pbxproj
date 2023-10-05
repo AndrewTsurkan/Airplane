@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C69A5002ACC63B6005B5A62 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C69A4FF2ACC63B6005B5A62 /* ImageView.swift */; };
 		5C7FCD2E2AAB176900DA7DDA /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7FCD2D2AAB176900DA7DDA /* UserSettings.swift */; };
 		5C7FCD302AAB21CB00DA7DDA /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7FCD2F2AAB21CB00DA7DDA /* GameViewController.swift */; };
 		5CFFE41D2AA9B789007475D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFE41C2AA9B789007475D6 /* AppDelegate.swift */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C69A4FF2ACC63B6005B5A62 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		5C7FCD2D2AAB176900DA7DDA /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		5C7FCD2F2AAB21CB00DA7DDA /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		5CFFE4192AA9B789007475D6 /* AirplanAston.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirplanAston.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +80,7 @@
 			children = (
 				5CFFE4302AA9B894007475D6 /* Models.swift */,
 				5C7FCD2D2AAB176900DA7DDA /* UserSettings.swift */,
+				5C69A4FF2ACC63B6005B5A62 /* ImageView.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -162,6 +165,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C69A5002ACC63B6005B5A62 /* ImageView.swift in Sources */,
 				5C7FCD302AAB21CB00DA7DDA /* GameViewController.swift in Sources */,
 				5CFFE4212AA9B789007475D6 /* MenuViewController.swift in Sources */,
 				5C7FCD2E2AAB176900DA7DDA /* UserSettings.swift in Sources */,

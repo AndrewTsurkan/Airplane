@@ -77,7 +77,6 @@ class MenuViewController: UIViewController {
         if sender.tag == 0 {
             let gameVC = GameViewController()
             navigationController?.pushViewController(gameVC, animated: true)
-            print("0")
 
         }
         if sender.tag == 1 {
@@ -87,7 +86,6 @@ class MenuViewController: UIViewController {
         }
         if sender.tag == 2 {
             //RecordsVC
-            print("2")
 
         }
     }

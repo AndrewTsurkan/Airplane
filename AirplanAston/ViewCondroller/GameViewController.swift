@@ -19,6 +19,7 @@ class GameViewController: UIViewController {
     var airplainX: NSLayoutConstraint?
     var UFOX: NSLayoutConstraint?
     var counter: CGFloat = 0
+    var displayLink: CADisplayLink?
     
     private lazy var backScreenButton: UIButton = {
         let button = UIButton()
@@ -32,7 +33,17 @@ class GameViewController: UIViewController {
         image.image = UIImage(named: "shoreLeft")
         return image
     }()
+    private let leftShoreSup: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "shoreLeft")
+        return image
+    }()
     private let rightShore: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "shoreRight")
+        return image
+    }()
+    private let rightShoreSup: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "shoreRight")
         return image
@@ -69,10 +80,9 @@ class GameViewController: UIViewController {
     private func createObstacle() {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [ weak self ] timer in
             guard let self else { return }
-            let image = UIImageView()
-            image.image = UIImage(named: "UFO")
+            let image = CustomImageView(frame: .zero)
             
-            self.view.insertSubview(image, at: 0)
+            self.view.addSubview(image)
             image.translatesAutoresizingMaskIntoConstraints = false
             
             let constant = CGFloat(Int.random(in: -150...150))
@@ -82,24 +92,19 @@ class GameViewController: UIViewController {
             NSLayoutConstraint.activate([
                 image.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: constant),
                 image.heightAnchor.constraint(equalToConstant: 50),
-                image.widthAnchor.constraint(equalToConstant: 50)])
+                image.widthAnchor.constraint(equalToConstant: 50)
+            ])
             self.view.layoutIfNeeded()
             
             yConstraint.constant = self.view.frame.height + 100
-            
-            UIView.animate(withDuration: 5) {
+
+            UIView.animate(withDuration: 5, delay: 0, options: .curveLinear) {
                 self.view.layoutIfNeeded()
             }
         }
     }
     
     private func setupViews() {
-        view.addSubview(leftShore)
-        leftShore.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(rightShore)
-        rightShore.translatesAutoresizingMaskIntoConstraints = false
-        
         view.addSubview(airplaneImage)
         airplaneImage.translatesAutoresizingMaskIntoConstraints = false
         
@@ -118,26 +123,17 @@ class GameViewController: UIViewController {
             backScreenButton.widthAnchor.constraint(equalToConstant: .backScreenButtonWithAndHeight),
             backScreenButton.heightAnchor.constraint(equalToConstant: .backScreenButtonWithAndHeight),
             
-            leftShore.topAnchor.constraint(equalTo: view.topAnchor),
-            leftShore.leftAnchor.constraint(equalTo: view.leftAnchor),
-            leftShore.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            leftShore.widthAnchor.constraint(equalToConstant: 30),
-            
-            rightShore.topAnchor.constraint(equalTo: view.topAnchor),
-            rightShore.rightAnchor.constraint(equalTo: view.rightAnchor),
-            rightShore.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
             airplaneImage.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -115),
             airplaneImage.widthAnchor.constraint(equalToConstant: 50),
             airplaneImage.heightAnchor.constraint(equalToConstant: 50),
             
             leftButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            leftButton.leftAnchor.constraint(equalTo: leftShore.rightAnchor, constant: 40),
+            leftButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 100),
             leftButton.widthAnchor.constraint(equalToConstant: 70),
             leftButton.heightAnchor.constraint(equalToConstant: 60),
             
             rightButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            rightButton.rightAnchor.constraint(equalTo: rightShore.leftAnchor, constant: -40),
+            rightButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -100),
             rightButton.widthAnchor.constraint(equalToConstant: 70),
             rightButton.heightAnchor.constraint(equalToConstant: 60)])
         
@@ -146,10 +142,64 @@ class GameViewController: UIViewController {
     }
     
     private func animationImage() {
-        UIView.animate(withDuration: 3) {
-            self.leftShore.frame.origin.y = self.view.frame.height * 2
-            self.rightShore.frame.origin.y = self.view.frame.height * 2
+        view.addSubview(leftShore)
+        leftShore.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(rightShore)
+        rightShore.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(leftShoreSup)
+        leftShoreSup.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(rightShoreSup)
+        rightShoreSup.translatesAutoresizingMaskIntoConstraints = false
+        
+        
+        let screen = -UIScreen.main.bounds.height
+        
+        let yConstraintLeftShore = leftShore.topAnchor.constraint(equalTo: self.view.topAnchor, constant:  screen)
+        yConstraintLeftShore.isActive = true
+        
+        let yConstraintRightShore = rightShore.topAnchor.constraint(equalTo: self.view.topAnchor, constant:  screen)
+        yConstraintRightShore.isActive = true
+        
+        let yConstraintLeftShoreSup = leftShoreSup.topAnchor.constraint(equalTo: self.view.topAnchor, constant: screen)
+        yConstraintLeftShoreSup.isActive = true
+        
+        let yConstraintRightShoreSup = rightShoreSup.topAnchor.constraint(equalTo: self.view.topAnchor, constant:  screen)
+        yConstraintRightShoreSup.isActive = true
+
+
+        NSLayoutConstraint.activate([
+            leftShore.leftAnchor.constraint(equalTo: view.leftAnchor),
+            leftShore.heightAnchor.constraint(equalToConstant: view.frame.height + 20),
+            
+            rightShore.rightAnchor.constraint(equalTo: view.rightAnchor),
+            rightShore.heightAnchor.constraint(equalToConstant: view.frame.height + 20),
+            
+            leftShoreSup.leftAnchor.constraint(equalTo: view.leftAnchor),
+            leftShoreSup.heightAnchor.constraint(equalToConstant: view.frame.height + 20),
+            
+            rightShoreSup.rightAnchor.constraint(equalTo: view.rightAnchor),
+            rightShoreSup.heightAnchor.constraint(equalToConstant: view.frame.height + 20)
+        ])
+        self.view.layoutIfNeeded()
+        
+        yConstraintLeftShore.constant = self.view.frame.height + 100
+        yConstraintRightShore.constant = self.view.frame.height + 100
+
+
+        UIView.animate(withDuration: 5, delay: 0, options: [.repeat, .curveLinear]) {
+            self.view.layoutIfNeeded()
         }
+        
+        yConstraintLeftShoreSup.constant = self.view.frame.height + 100
+        yConstraintRightShoreSup.constant = self.view.frame.height + 100
+        
+        UIView.animate(withDuration: 5, delay: 2.5, options: [.curveLinear, .repeat]) {
+            self.view.layoutIfNeeded()
+        }
+        
     }
     
     @objc func actionMoveAirplane(sander: UIButton) {
