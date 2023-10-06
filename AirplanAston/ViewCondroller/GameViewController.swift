@@ -20,6 +20,12 @@ class GameViewController: UIViewController {
     var UFOX: NSLayoutConstraint?
     var counter: CGFloat = 0
     var displayLink: CADisplayLink?
+    var gameOverImage: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "gameOver")
+        image.isHidden = true
+        return image
+    }()
     
     private lazy var backScreenButton: UIButton = {
         let button = UIButton()
@@ -101,10 +107,40 @@ class GameViewController: UIViewController {
             UIView.animate(withDuration: 5, delay: 0, options: .curveLinear) {
                 self.view.layoutIfNeeded()
             }
+            startDisplayLink()
+        }
+    }
+    
+    func startDisplayLink() {
+        displayLink = CADisplayLink(target: self, selector: #selector(checkForCollision))
+        displayLink?.add(to: .current, forMode: .common)
+    }
+    
+    @objc func checkForCollision() {
+        for subview in view.subviews {
+            if subview is CustomImageView {
+                guard let airplaneFrame = airplaneImage.layer.presentation()?.frame,
+                      let UFOFrame = subview.layer.presentation()?.frame else { return }
+                
+                if airplaneFrame.intersects(UFOFrame) {
+                    print("Collision detected!")
+                    timer.invalidate()
+
+                    subview.layer.removeAllAnimations()
+                    view.subviews.forEach{ $0.layer.removeAllAnimations()}
+                    gameOverImage.isHidden = false
+                    leftButton.isEnabled = false
+                    rightButton.isEnabled = false
+                }
+            }
         }
     }
     
     private func setupViews() {
+        
+        view.addSubview(gameOverImage)
+        gameOverImage.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(airplaneImage)
         airplaneImage.translatesAutoresizingMaskIntoConstraints = false
         
@@ -118,6 +154,11 @@ class GameViewController: UIViewController {
         backScreenButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            gameOverImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            gameOverImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            gameOverImage.heightAnchor.constraint(equalToConstant: 250),
+            gameOverImage.widthAnchor.constraint(equalToConstant: 250),
+            
             backScreenButton.topAnchor.constraint(equalTo: view.topAnchor, constant: .foutyOffset),
             backScreenButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: .backScreenButtonLeftAnchor),
             backScreenButton.widthAnchor.constraint(equalToConstant: .backScreenButtonWithAndHeight),
@@ -154,7 +195,6 @@ class GameViewController: UIViewController {
         view.addSubview(rightShoreSup)
         rightShoreSup.translatesAutoresizingMaskIntoConstraints = false
         
-        
         let screen = -UIScreen.main.bounds.height
         
         let yConstraintLeftShore = leftShore.topAnchor.constraint(equalTo: self.view.topAnchor, constant:  screen)
@@ -168,7 +208,6 @@ class GameViewController: UIViewController {
         
         let yConstraintRightShoreSup = rightShoreSup.topAnchor.constraint(equalTo: self.view.topAnchor, constant:  screen)
         yConstraintRightShoreSup.isActive = true
-
 
         NSLayoutConstraint.activate([
             leftShore.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -203,15 +242,16 @@ class GameViewController: UIViewController {
     }
     
     @objc func actionMoveAirplane(sander: UIButton) {
+        
         if sander.tag == 0 {
             if counter < 100 {
-                counter += 100
+                counter += 50
             }
         }
         
         if sander.tag == 1 {
             if counter > -100 {
-                counter -= 100
+                counter -= 50
             }
         }
         
