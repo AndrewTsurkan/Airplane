@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 extension String {
     static let airplaneArr = ["GrayAirplane", "GreenAirplane", "SpaceAirplane", "Airplane"]
 }

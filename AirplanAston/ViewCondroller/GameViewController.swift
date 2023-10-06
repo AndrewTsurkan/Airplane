@@ -23,6 +23,7 @@ private extension CGFloat {
 
 class GameViewController: UIViewController {
     //MARK: - properties
+    var modelAirplaine = ""
     private var timer: Timer!
     private var airplainX: NSLayoutConstraint?
     private var UFOX: NSLayoutConstraint?
@@ -40,14 +41,13 @@ class GameViewController: UIViewController {
         button.setImage(UIImage(named: "tryAgain"), for: .normal)
         button.tag = 3
         button.isHidden = true
-        button.addTarget(self, action: #selector(actionButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(actionTryAgainButton), for: .touchUpInside)
         return button
     }()
     private lazy var backScreenButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "backScreen"), for: .normal)
-        button.tag = 2
-        button.addTarget(self, action: #selector(actionButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(actionBackButton), for: .touchUpInside)
         return button
     }()
     private let leftShore: UIImageView = {
@@ -72,7 +72,7 @@ class GameViewController: UIViewController {
     }()
     private let airplaneImage: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: .airplaneArr[0])
+        image.image = UIImage(named: .airplaneArr[UserSettings.modelAirplane ?? 0])
         return image
     }()
     private lazy var rightButton: UIButton = {
@@ -170,7 +170,7 @@ class GameViewController: UIViewController {
         
         view.addSubview(rightShoreSup)
         rightShoreSup.translatesAutoresizingMaskIntoConstraints = false
-                
+        
         let yConstraintLeftShore = leftShore.topAnchor.constraint(equalTo: self.view.topAnchor, constant: -.screenHeight)
         yConstraintLeftShore.isActive = true
         
@@ -182,7 +182,7 @@ class GameViewController: UIViewController {
         
         let yConstraintRightShoreSup = rightShoreSup.topAnchor.constraint(equalTo: self.view.topAnchor, constant:  -.screenHeight)
         yConstraintRightShoreSup.isActive = true
-
+        
         NSLayoutConstraint.activate([
             leftShore.leftAnchor.constraint(equalTo: view.leftAnchor),
             leftShore.heightAnchor.constraint(equalToConstant: .screenHeight + .twenty),
@@ -200,7 +200,7 @@ class GameViewController: UIViewController {
         
         yConstraintLeftShore.constant = .screenHeight + .oneHundred
         yConstraintRightShore.constant = .screenHeight + .oneHundred
-
+        
         UIView.animate(withDuration: 5, delay: 0, options: [.repeat, .curveLinear]) {
             self.view.layoutIfNeeded()
         }
@@ -216,9 +216,9 @@ class GameViewController: UIViewController {
     private func createObstacle() {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [ weak self ] timer in
             guard let self else { return }
-            let image = CustomImageView(frame: .zero)
+            let image = UFOImageView(frame: .zero)
             
-            self.view.addSubview(image)
+            self.view.insertSubview(image, at: 0)
             image.translatesAutoresizingMaskIntoConstraints = false
             
             let constant = CGFloat(Int.random(in: -150...150))
@@ -233,7 +233,7 @@ class GameViewController: UIViewController {
             self.view.layoutIfNeeded()
             
             yConstraint.constant = .screenHeight + .oneHundred
-
+            
             UIView.animate(withDuration: 5, delay: 0, options: .curveLinear) {
                 self.view.layoutIfNeeded()
             }
@@ -241,15 +241,16 @@ class GameViewController: UIViewController {
         }
     }
     
-    //MARK: - SupFunc
+    //MARK: - Sup func
     func startDisplayLink() {
         displayLink = CADisplayLink(target: self, selector: #selector(checkForCollision))
         displayLink?.add(to: .current, forMode: .common)
     }
     
+    //MARK: - @objc func
     @objc func checkForCollision() {
         for subview in view.subviews {
-            if subview is CustomImageView {
+            if subview is UFOImageView {
                 guard let airplaneFrame = airplaneImage.layer.presentation()?.frame,
                       let UFOFrame = subview.layer.presentation()?.frame else { return }
                 
@@ -285,29 +286,27 @@ class GameViewController: UIViewController {
         }
     }
     
-    @objc func actionButton(sender: UIButton) {
-        if sender.tag == 2 {
-            navigationController?.popViewController(animated: true)
-        }
-        
-        if sender.tag == 3 {
-            for subview in view.subviews {
-                if subview is CustomImageView {
-                    subview.removeFromSuperview()
-                }
+    @objc func actionBackButton() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func actionTryAgainButton() {
+        for subview in view.subviews {
+            if subview is UFOImageView {
+                subview.removeFromSuperview()
             }
-            leftShoreSup.removeFromSuperview()
-            leftShore.removeFromSuperview()
-            rightShore.removeFromSuperview()
-            rightShoreSup.removeFromSuperview()
-
-            view.reloadInputViews()
-            animationImage()
-            createObstacle()
-            gameOverImage.isHidden = true
-            tryAgainButton.isHidden = true
-            leftButton.isEnabled = true
-            rightButton.isEnabled = true
         }
+        leftShoreSup.removeFromSuperview()
+        leftShore.removeFromSuperview()
+        rightShore.removeFromSuperview()
+        rightShoreSup.removeFromSuperview()
+        
+        view.reloadInputViews()
+        animationImage()
+        createObstacle()
+        gameOverImage.isHidden = true
+        tryAgainButton.isHidden = true
+        leftButton.isEnabled = true
+        rightButton.isEnabled = true
     }
 }

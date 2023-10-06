@@ -4,7 +4,6 @@
 //
 //  Created by Андрей Цуркан on 07.09.2023.
 
-//MARK: - import
 import UIKit
 
 //MARK: - extension
@@ -204,6 +203,7 @@ class SettingsViewController: UIViewController {
         if sender.tag == 2 {
             navigationController?.popViewController(animated: true)
         }
+        
         UserSettings.modelAirplane = counter
         airplaneImage.image = UIImage(named: .airplaneArr[counter])
     }

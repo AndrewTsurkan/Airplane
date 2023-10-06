@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CustomImageView: UIImageView {
+class UFOImageView: UIImageView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
