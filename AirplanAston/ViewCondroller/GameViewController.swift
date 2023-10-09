@@ -8,17 +8,16 @@
 import UIKit
 //MARK: - extension CGFloat
 private extension CGFloat {
-    static let backScreenButtonLeftAnchor = 30.0
-    static let foutyOffset = 35.0
-    static let backScreenButtonWithAndHeight = 35.0
-    static let screenHeight = UIScreen.main.bounds.height
-    static let oneHundred = 100.0
+    static let fifteen = 15.0
+    static let twenty = 20.0
+    static let thirtyFive = 35.0
     static let fifty = 50.0
+    static let fiftyFive = 55.0
     static let sixty = 60.0
     static let seventy = 70.0
+    static let oneHundred = 100.0
     static let twoGundredAndFifty = 250.0
-    static let twenty = 20.0
-    static let fiftyFive = 55.0
+    static let screenHeight = UIScreen.main.bounds.height
 }
 
 class GameViewController: UIViewController {
@@ -41,7 +40,7 @@ class GameViewController: UIViewController {
         button.setImage(UIImage(named: "tryAgain"), for: .normal)
         button.tag = 3
         button.isHidden = true
-        button.addTarget(self, action: #selector(actionTryAgainButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(launchingTheGame), for: .touchUpInside)
         return button
     }()
     private lazy var backScreenButton: UIButton = {
@@ -82,6 +81,13 @@ class GameViewController: UIViewController {
         button.addTarget(self, action: #selector(actionMoveAirplane), for: .touchUpInside)
         return button
     }()
+    private lazy var shotButton: UIButton = {
+        let button = UIButton()
+        button.tag = 1
+        button.setImage(UIImage(named: "shot"), for: .normal)
+        button.addTarget(self, action: #selector(takeAShot), for: .touchUpInside)
+        return button
+    }()
     private lazy var leftButton: UIButton = {
         let button = UIButton()
         button.tag = 1
@@ -118,6 +124,9 @@ class GameViewController: UIViewController {
         view.addSubview(rightButton)
         rightButton.translatesAutoresizingMaskIntoConstraints = false
         
+        view.addSubview(shotButton)
+        shotButton.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(leftButton)
         leftButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -135,22 +144,27 @@ class GameViewController: UIViewController {
             tryAgainButton.widthAnchor.constraint(equalToConstant: .fifty),
             tryAgainButton.heightAnchor.constraint(equalToConstant: .fifty),
             
-            backScreenButton.topAnchor.constraint(equalTo: view.topAnchor, constant: .foutyOffset),
-            backScreenButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: .backScreenButtonLeftAnchor),
-            backScreenButton.widthAnchor.constraint(equalToConstant: .backScreenButtonWithAndHeight),
-            backScreenButton.heightAnchor.constraint(equalToConstant: .backScreenButtonWithAndHeight),
+            backScreenButton.topAnchor.constraint(equalTo: view.topAnchor, constant: .thirtyFive),
+            backScreenButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: .thirtyFive),
+            backScreenButton.widthAnchor.constraint(equalToConstant: .thirtyFive),
+            backScreenButton.heightAnchor.constraint(equalToConstant: .thirtyFive),
             
-            airplaneImage.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -.oneHundred - 15),
+            airplaneImage.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -.oneHundred - .fifteen),
             airplaneImage.widthAnchor.constraint(equalToConstant: .fifty),
             airplaneImage.heightAnchor.constraint(equalToConstant: .fifty),
             
+            shotButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -.fiftyFive),
+            shotButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            shotButton.widthAnchor.constraint(equalToConstant: .fifty),
+            shotButton.heightAnchor.constraint(equalToConstant: .fifty),
+            
             leftButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -.fifty),
-            leftButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: .oneHundred),
+            leftButton.rightAnchor.constraint(equalTo: shotButton.leftAnchor, constant: -.twenty),
             leftButton.widthAnchor.constraint(equalToConstant: .seventy),
             leftButton.heightAnchor.constraint(equalToConstant: .sixty),
             
             rightButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -.fifty),
-            rightButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -.oneHundred),
+            rightButton.leftAnchor.constraint(equalTo: shotButton.rightAnchor, constant: .twenty),
             rightButton.widthAnchor.constraint(equalToConstant: .seventy),
             rightButton.heightAnchor.constraint(equalToConstant: .sixty)])
         
@@ -256,14 +270,34 @@ class GameViewController: UIViewController {
                 
                 if airplaneFrame.intersects(UFOFrame) {
                     timer.invalidate()
-                    view.subviews.forEach{ $0.layer.removeAllAnimations()}
+                    view.subviews.forEach{ $0.layer.removeAllAnimations() }
                     gameOverImage.isHidden = false
                     tryAgainButton.isHidden = false
                     leftButton.isEnabled = false
                     rightButton.isEnabled = false
+                    shotButton.isEnabled = false
                 }
             }
         }
+        
+        for cartridge in view.subviews {
+            if cartridge is СartridgeImageView {
+                guard let cartridgeFrame = cartridge.layer.presentation()?.frame else { return }
+                for UFO in view.subviews {
+                    if UFO is UFOImageView {
+                    guard let UFOFrame = UFO.layer.presentation()?.frame else { return }
+                        if cartridgeFrame.intersects(UFOFrame) {
+                            UFO.removeFromSuperview()
+                            cartridge.removeFromSuperview()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    @objc func actionBackButton() {
+        navigationController?.popViewController(animated: true)
     }
     
     @objc func actionMoveAirplane(sander: UIButton) {
@@ -286,11 +320,28 @@ class GameViewController: UIViewController {
         }
     }
     
-    @objc func actionBackButton() {
-        navigationController?.popViewController(animated: true)
+    @objc func takeAShot() {
+        let cartridge = СartridgeImageView(frame: .zero)
+        view.addSubview(cartridge)
+        cartridge.translatesAutoresizingMaskIntoConstraints = false
+        let yConstraintShot = cartridge.bottomAnchor.constraint(equalTo: airplaneImage.topAnchor)
+        yConstraintShot.isActive = true
+        let const = self.counter
+        
+        NSLayoutConstraint.activate([
+            cartridge.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: const),
+            cartridge.heightAnchor.constraint(equalToConstant: .fifteen),
+            cartridge.widthAnchor.constraint(equalToConstant: .fifteen)])
+        view.layoutIfNeeded()
+        
+        yConstraintShot.constant = -.screenHeight
+        
+        UIView.animate(withDuration: 5, delay: 0, options: .curveLinear) {
+            self.view.layoutIfNeeded()
+        }
     }
     
-    @objc func actionTryAgainButton() {
+    @objc func launchingTheGame() {
         for subview in view.subviews {
             if subview is UFOImageView {
                 subview.removeFromSuperview()
@@ -308,5 +359,6 @@ class GameViewController: UIViewController {
         tryAgainButton.isHidden = true
         leftButton.isEnabled = true
         rightButton.isEnabled = true
+        shotButton.isEnabled = true
     }
 }
