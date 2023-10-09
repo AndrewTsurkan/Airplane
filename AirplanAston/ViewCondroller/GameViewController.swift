@@ -22,13 +22,19 @@ private extension CGFloat {
 
 class GameViewController: UIViewController {
     //MARK: - properties
-    var modelAirplaine = ""
+    var counterScore:Int = 0
     private var timer: Timer!
+    var timerScore: Timer!
     private var airplainX: NSLayoutConstraint?
     private var UFOX: NSLayoutConstraint?
     private var counter: CGFloat = 0
     private var displayLink: CADisplayLink?
-    
+    var scoreLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        return label
+    }()
     private var gameOverImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "gameOver")
@@ -103,6 +109,7 @@ class GameViewController: UIViewController {
         setupViews()
         animationImage()
         createObstacle()
+        scoring()
     }
     
     //MARK: - Func
@@ -112,6 +119,9 @@ class GameViewController: UIViewController {
     }
     
     private func setupViews() {
+        view.addSubview(scoreLabel)
+        scoreLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(gameOverImage)
         gameOverImage.translatesAutoresizingMaskIntoConstraints = false
         
@@ -148,6 +158,10 @@ class GameViewController: UIViewController {
             backScreenButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: .thirtyFive),
             backScreenButton.widthAnchor.constraint(equalToConstant: .thirtyFive),
             backScreenButton.heightAnchor.constraint(equalToConstant: .thirtyFive),
+            
+            scoreLabel.topAnchor.constraint(equalTo: backScreenButton.bottomAnchor, constant: 10),
+            scoreLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: .thirtyFive),
+            scoreLabel.heightAnchor.constraint(equalToConstant: .fiftyFive),
             
             airplaneImage.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -.oneHundred - .fifteen),
             airplaneImage.widthAnchor.constraint(equalToConstant: .fifty),
@@ -256,6 +270,15 @@ class GameViewController: UIViewController {
     }
     
     //MARK: - Sup func
+    private func scoring() {
+        scoreLabel.isHidden = false 
+        scoreLabel.text = "Score: \(counterScore)"
+        timerScore = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { [weak self] timer in
+            guard let self else { return }
+            self.counterScore += 1
+            self.scoreLabel.text = "Score: \(self.counterScore)"
+        })
+    }
     func startDisplayLink() {
         displayLink = CADisplayLink(target: self, selector: #selector(checkForCollision))
         displayLink?.add(to: .current, forMode: .common)
@@ -270,6 +293,7 @@ class GameViewController: UIViewController {
                 
                 if airplaneFrame.intersects(UFOFrame) {
                     timer.invalidate()
+                    timerScore.invalidate()
                     view.subviews.forEach{ $0.layer.removeAllAnimations() }
                     gameOverImage.isHidden = false
                     tryAgainButton.isHidden = false
@@ -289,6 +313,7 @@ class GameViewController: UIViewController {
                         if cartridgeFrame.intersects(UFOFrame) {
                             UFO.removeFromSuperview()
                             cartridge.removeFromSuperview()
+                            counterScore += Int(.fifteen)
                         }
                     }
                 }
@@ -330,8 +355,8 @@ class GameViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             cartridge.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: const),
-            cartridge.heightAnchor.constraint(equalToConstant: .fifteen),
-            cartridge.widthAnchor.constraint(equalToConstant: .fifteen)])
+            cartridge.heightAnchor.constraint(equalToConstant: .twenty),
+            cartridge.widthAnchor.constraint(equalToConstant: .twenty)])
         view.layoutIfNeeded()
         
         yConstraintShot.constant = -.screenHeight
@@ -355,10 +380,13 @@ class GameViewController: UIViewController {
         view.reloadInputViews()
         animationImage()
         createObstacle()
+        scoring()
+        scoreLabel.isHidden = true
         gameOverImage.isHidden = true
         tryAgainButton.isHidden = true
         leftButton.isEnabled = true
         rightButton.isEnabled = true
         shotButton.isEnabled = true
+        counterScore = 0
     }
 }
