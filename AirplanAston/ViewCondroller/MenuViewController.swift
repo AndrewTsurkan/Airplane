@@ -85,7 +85,8 @@ class MenuViewController: UIViewController {
 
         }
         if sender.tag == 2 {
-            //RecordsVC
+            let recordsViewController = RecordViewController()
+            navigationController?.pushViewController(recordsViewController, animated: true)
 
         }
     }

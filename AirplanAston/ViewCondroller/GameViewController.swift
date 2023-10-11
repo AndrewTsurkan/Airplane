@@ -25,6 +25,7 @@ class GameViewController: UIViewController {
     var counterScore:Int = 0
     private var timer: Timer!
     var timerScore: Timer!
+    var arr:[UserData] = []
     private var airplainX: NSLayoutConstraint?
     private var UFOX: NSLayoutConstraint?
     private var counter: CGFloat = 0
@@ -242,6 +243,14 @@ class GameViewController: UIViewController {
     }
     
     private func createObstacle() {
+        var speed: Double = 0
+        if UserSettings.modeGame == 1 {
+            speed = 3.5
+        } else if UserSettings.modeGame == 0 {
+            speed = 5
+        } else if UserSettings.modeGame == 2 {
+            speed = 2
+        }
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [ weak self ] timer in
             guard let self else { return }
             let image = UFOImageView(frame: .zero)
@@ -262,7 +271,7 @@ class GameViewController: UIViewController {
             
             yConstraint.constant = .screenHeight + .oneHundred
             
-            UIView.animate(withDuration: 5, delay: 0, options: .curveLinear) {
+            UIView.animate(withDuration: speed, delay: 0, options: .curveLinear) {
                 self.view.layoutIfNeeded()
             }
             startDisplayLink()
@@ -271,7 +280,7 @@ class GameViewController: UIViewController {
     
     //MARK: - Sup func
     private func scoring() {
-        scoreLabel.isHidden = false 
+        scoreLabel.isHidden = false
         scoreLabel.text = "Score: \(counterScore)"
         timerScore = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { [weak self] timer in
             guard let self else { return }

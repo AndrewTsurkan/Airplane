@@ -11,6 +11,8 @@
 		5C69A5432AD081C8005B5A62 /* СartridgeImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C69A5422AD081C8005B5A62 /* СartridgeImageView.swift */; };
 		5C7FCD2E2AAB176900DA7DDA /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7FCD2D2AAB176900DA7DDA /* UserSettings.swift */; };
 		5C7FCD302AAB21CB00DA7DDA /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7FCD2F2AAB21CB00DA7DDA /* GameViewController.swift */; };
+		5C80DF472AD5A16B00555D4A /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C80DF462AD5A16B00555D4A /* RecordViewController.swift */; };
+		5C80DF492AD5A32600555D4A /* RecordsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C80DF482AD5A32600555D4A /* RecordsCell.swift */; };
 		5CFFE41D2AA9B789007475D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFE41C2AA9B789007475D6 /* AppDelegate.swift */; };
 		5CFFE41F2AA9B789007475D6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFE41E2AA9B789007475D6 /* SceneDelegate.swift */; };
 		5CFFE4212AA9B789007475D6 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFE4202AA9B789007475D6 /* MenuViewController.swift */; };
@@ -25,6 +27,8 @@
 		5C69A5422AD081C8005B5A62 /* СartridgeImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "СartridgeImageView.swift"; sourceTree = "<group>"; };
 		5C7FCD2D2AAB176900DA7DDA /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		5C7FCD2F2AAB21CB00DA7DDA /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		5C80DF462AD5A16B00555D4A /* RecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
+		5C80DF482AD5A32600555D4A /* RecordsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsCell.swift; sourceTree = "<group>"; };
 		5CFFE4192AA9B789007475D6 /* AirplanAston.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirplanAston.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CFFE41C2AA9B789007475D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5CFFE41E2AA9B789007475D6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -52,6 +56,7 @@
 			children = (
 				5C69A4FF2ACC63B6005B5A62 /* UFOImageView.swift */,
 				5C69A5422AD081C8005B5A62 /* СartridgeImageView.swift */,
+				5C80DF482AD5A32600555D4A /* RecordsCell.swift */,
 			);
 			path = CustomViewClass;
 			sourceTree = "<group>";
@@ -102,6 +107,7 @@
 				5CFFE4202AA9B789007475D6 /* MenuViewController.swift */,
 				5CFFE4342AA9C238007475D6 /* SettingsViewController.swift */,
 				5C7FCD2F2AAB21CB00DA7DDA /* GameViewController.swift */,
+				5C80DF462AD5A16B00555D4A /* RecordViewController.swift */,
 			);
 			path = ViewCondroller;
 			sourceTree = "<group>";
@@ -177,12 +183,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C69A5002ACC63B6005B5A62 /* UFOImageView.swift in Sources */,
+				5C80DF492AD5A32600555D4A /* RecordsCell.swift in Sources */,
 				5C7FCD302AAB21CB00DA7DDA /* GameViewController.swift in Sources */,
 				5CFFE4212AA9B789007475D6 /* MenuViewController.swift in Sources */,
 				5C7FCD2E2AAB176900DA7DDA /* UserSettings.swift in Sources */,
 				5CFFE41D2AA9B789007475D6 /* AppDelegate.swift in Sources */,
 				5CFFE41F2AA9B789007475D6 /* SceneDelegate.swift in Sources */,
 				5C69A5432AD081C8005B5A62 /* СartridgeImageView.swift in Sources */,
+				5C80DF472AD5A16B00555D4A /* RecordViewController.swift in Sources */,
 				5CFFE4352AA9C238007475D6 /* SettingsViewController.swift in Sources */,
 				5CFFE4312AA9B894007475D6 /* Models.swift in Sources */,
 			);

@@ -7,6 +7,13 @@
 
 import Foundation
 
+struct UserData: Codable {
+    var name: String
+    var score: Int = 0 
+}
+
 extension String {
     static let airplaneArr = ["GrayAirplane", "GreenAirplane", "SpaceAirplane", "Airplane"]
 }
+
+

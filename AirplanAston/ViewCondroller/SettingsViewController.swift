@@ -60,7 +60,7 @@ class SettingsViewController: UIViewController {
         let button = UIButton()
         button.setImage(UIImage(named: "backScreen"), for: .normal)
         button.tag = 2
-        button.addTarget(self, action: #selector(actionButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(returnToPreviousScreen), for: .touchUpInside)
         return button
     }()
     private lazy var writeName: UIButton = {
@@ -93,6 +93,7 @@ class SettingsViewController: UIViewController {
         label.layer.borderWidth = 1
         return label
     }()
+    let userDefaults = UserDefaults()
     private var airplaneImage = UIImageView()
     private let stackView = UIStackView()
     private var counter = UserSettings.modelAirplane ?? 1
@@ -199,15 +200,14 @@ class SettingsViewController: UIViewController {
                 counter = 3
             }
         }
-        
-        if sender.tag == 2 {
-            navigationController?.popViewController(animated: true)
-        }
-        
         UserSettings.modelAirplane = counter
         airplaneImage.image = UIImage(named: .airplaneArr[counter])
     }
     
+    @objc private func returnToPreviousScreen() {
+            navigationController?.popViewController(animated: true)
+        }
+        
     @objc func actionWriteNameButton() {
         let alert = UIAlertController(title: nil, message: .aletMassege, preferredStyle: .alert)
         alert.addTextField { text in
