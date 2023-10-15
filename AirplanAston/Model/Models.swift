@@ -9,7 +9,8 @@ import Foundation
 
 struct UserData: Codable {
     var name: String
-    var score: Int = 0 
+    var score: Int
+    
 }
 
 extension String {

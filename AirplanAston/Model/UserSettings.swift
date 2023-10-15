@@ -57,10 +57,11 @@ final class UserSettings {
             }
         }
     }
-     static var records: UserData? {
+    
+     static var records: [UserData]? {
        get {
            let userDefaults = UserDefaults.standard
-           return  userDefaults.readData(type: UserData.self, key: SettingsKeys.recordScore.rawValue)
+           return  userDefaults.readData(type: [UserData].self, key: SettingsKeys.recordScore.rawValue)
        } set {
            let userDefaults = UserDefaults.standard
            let recordsKey = SettingsKeys.recordScore.rawValue
@@ -78,7 +79,7 @@ extension UserDefaults {
         let data = try? JSONEncoder().encode(someData)
         set(data, forKey: key)
     }
-    
+
     func readData<T: Codable>(type: T.Type, key: String) ->  T? {
         guard let data = value(forKey: key) as? Data else { return nil }
         let newData = try? JSONDecoder().decode(type, from: data)

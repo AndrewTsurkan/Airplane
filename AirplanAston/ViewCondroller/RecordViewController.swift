@@ -19,6 +19,14 @@ class RecordViewController: UIViewController {
         button.addTarget(self, action: #selector(returnToPreviousScreen), for: .touchUpInside)
         return button
     }()
+    var userDataArray: [UserData] {
+        get{
+            return UserSettings.records ?? []
+        } set {
+            UserSettings.records = newValue
+            recordsTableView.reloadData()
+        }
+    }
     
     //MARK: - lifeCycle
     override func viewDidLoad() {
@@ -39,6 +47,7 @@ class RecordViewController: UIViewController {
         recordsTableView.register(RecordsCell.self, forCellReuseIdentifier: RecordsCell.identifier)
         
         recordsTableView.separatorColor = .white
+        recordsTableView.backgroundColor = .white
         
         
         NSLayoutConstraint.activate([
@@ -60,6 +69,7 @@ class RecordViewController: UIViewController {
         backScreenButton.translatesAutoresizingMaskIntoConstraints = false
         
         titleLabel.text = "Records"
+        titleLabel.textColor = .black
         titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
         
         NSLayoutConstraint.activate([
@@ -84,17 +94,33 @@ class RecordViewController: UIViewController {
 //MARK: - extension UITableViewDelegate, UITableViewDataSource
 extension RecordViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
+        userDataArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: RecordsCell.identifier, for: indexPath) as? RecordsCell else { return UITableViewCell() }
+        let customCell = RecordsCell()
+        customCell.index = indexPath.row
+        cell.nameLabel.text = userDataArray[indexPath.row].name
+        cell.scoreLabel.text = String(userDataArray[indexPath.row].score)
         return cell
         
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         70
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //TODO: - Action
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            userDataArray.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.reloadData()
+        }
     }
     
     

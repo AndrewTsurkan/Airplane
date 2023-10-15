@@ -30,10 +30,12 @@ class GameViewController: UIViewController {
     private var UFOX: NSLayoutConstraint?
     private var counter: CGFloat = 0
     private var displayLink: CADisplayLink?
+    var userName = "User"
     var scoreLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = .black
         return label
     }()
     private var gameOverImage: UIImageView = {
@@ -309,6 +311,13 @@ class GameViewController: UIViewController {
                     leftButton.isEnabled = false
                     rightButton.isEnabled = false
                     shotButton.isEnabled = false
+                    let recordVC = RecordViewController()
+                    var index = recordVC.userDataArray.count - 1
+                    if recordVC.userDataArray.isEmpty {
+                        return
+                    } else {
+                        recordVC.userDataArray[index].score = counterScore
+                    }
                 }
             }
         }
@@ -318,7 +327,7 @@ class GameViewController: UIViewController {
                 guard let cartridgeFrame = cartridge.layer.presentation()?.frame else { return }
                 for UFO in view.subviews {
                     if UFO is UFOImageView {
-                    guard let UFOFrame = UFO.layer.presentation()?.frame else { return }
+                        guard let UFOFrame = UFO.layer.presentation()?.frame else { return }
                         if cartridgeFrame.intersects(UFOFrame) {
                             UFO.removeFromSuperview()
                             cartridge.removeFromSuperview()
@@ -332,6 +341,21 @@ class GameViewController: UIViewController {
     
     @objc func actionBackButton() {
         navigationController?.popViewController(animated: true)
+        let recordVC = RecordViewController()
+        let index = recordVC.userDataArray.count - 1
+        if recordVC.userDataArray.isEmpty {
+            let settingVC = SettingsViewController()
+            guard let namePlayer = settingVC.nameLabel.text else { return }
+            if namePlayer == "" {
+                let user = UserData(name: "Anon", score: counterScore)
+                recordVC.userDataArray.append(user)
+            } else {
+                let user = UserData(name: namePlayer, score: counterScore)
+                recordVC.userDataArray.append(user)
+            }
+        } else {
+            recordVC.userDataArray[index].score = counterScore
+        }
     }
     
     @objc func actionMoveAirplane(sander: UIButton) {

@@ -15,6 +15,7 @@ class RecordsCell: UITableViewCell {
     var emptyView = UIView()
     var scoreLabel = UILabel()
     var stackView = UIStackView()
+    var index = 0
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -46,10 +47,11 @@ class RecordsCell: UITableViewCell {
     }
     
     func setupSubView() {
+        backgroundColor = .white
         stackView.addArrangedSubview(nameLabel)
         stackView.addArrangedSubview(emptyView)
         stackView.addArrangedSubview(scoreLabel)
-        
-        nameLabel.text = UserSettings.records?.name
+        nameLabel.textColor = .black
+        scoreLabel.textColor = .black
     }
 }

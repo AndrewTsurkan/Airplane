@@ -46,7 +46,7 @@ class SettingsViewController: UIViewController {
         button.addTarget(self, action: #selector(actionButton), for: .touchUpInside)
         return button
     }()
-    private let nameLabel: UILabel = {
+    let nameLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 20)
@@ -54,6 +54,7 @@ class SettingsViewController: UIViewController {
         label.layer.borderColor = UIColor.black.cgColor
         label.layer.borderWidth = 1
         label.text = UserSettings.userName
+        label.textColor = .black
         return label
     }()
     private lazy var backScreenButton: UIButton = {
@@ -91,6 +92,7 @@ class SettingsViewController: UIViewController {
         label.layer.cornerRadius = 15
         label.layer.borderColor = UIColor.black.cgColor
         label.layer.borderWidth = 1
+        label.textColor = .black
         return label
     }()
     let userDefaults = UserDefaults()
@@ -219,6 +221,10 @@ class SettingsViewController: UIViewController {
             guard let text = alert.textFields?.first?.text else { return }
             UserSettings.userName = text
             self.nameLabel.text = UserSettings.userName
+            let gameViewController = GameViewController()
+            let user = UserData(name: "\(text)", score: 0)
+            let recordVC = RecordViewController()
+            recordVC.userDataArray.append(user)
         })
         self.present(alert, animated: true)
     }
@@ -227,12 +233,14 @@ class SettingsViewController: UIViewController {
         if sender.tag == 0 {
             if speedCounter > 0 {
                 speedCounter -= 1
+                print(speedCounter)
             }
         }
             if sender.tag == 1 {
                 if speedCounter < 2 {
                     speedCounter += 1
-                    
+                    print(speedCounter)
+
                 }
             }
         UserSettings.modeGame = speedCounter
