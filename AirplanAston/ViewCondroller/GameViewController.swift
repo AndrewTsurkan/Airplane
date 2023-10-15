@@ -311,13 +311,6 @@ class GameViewController: UIViewController {
                     leftButton.isEnabled = false
                     rightButton.isEnabled = false
                     shotButton.isEnabled = false
-                    let recordVC = RecordViewController()
-                    var index = recordVC.userDataArray.count - 1
-                    if recordVC.userDataArray.isEmpty {
-                        return
-                    } else {
-                        recordVC.userDataArray[index].score = counterScore
-                    }
                 }
             }
         }
