@@ -221,7 +221,6 @@ class SettingsViewController: UIViewController {
             guard let text = alert.textFields?.first?.text else { return }
             UserSettings.userName = text
             self.nameLabel.text = UserSettings.userName
-            let gameViewController = GameViewController()
             let user = UserData(name: "\(text)", score: 0)
             let recordVC = RecordViewController()
             recordVC.userDataArray.append(user)

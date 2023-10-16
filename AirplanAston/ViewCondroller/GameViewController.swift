@@ -276,7 +276,7 @@ class GameViewController: UIViewController {
             UIView.animate(withDuration: speed, delay: 0, options: .curveLinear) {
                 self.view.layoutIfNeeded()
             }
-            startDisplayLink()
+            self.startDisplayLink()
         }
     }
     
